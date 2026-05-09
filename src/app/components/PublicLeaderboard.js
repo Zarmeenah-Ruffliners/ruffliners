@@ -7,7 +7,7 @@ const fmt = (n) => n >= 1000000 ? (n/1000000).toFixed(1)+'M' : n >= 1000 ? (n/10
 const money = (n) => n >= 1000 ? '$'+(n/1000).toFixed(1)+'K' : '$'+Math.round(n);
 
 const allMonths = [...new Set(TOP_VIDEOS.map(v => v.date.slice(0,7)))].sort();
-const LAST_MONTH = allMonths[allMonths.length - 2] || allMonths[allMonths.length - 1];
+const LAST_MONTH = '2026-04';
 const MONTH_NAMES = {'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'};
 function monthLabel(m) { const [y,mo] = m.split('-'); return `${MONTH_NAMES[mo]} ${y}`; }
 

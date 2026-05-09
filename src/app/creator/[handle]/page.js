@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { TOP_VIDEOS, LAST_UPDATED } from '../../data';
 
 const fmt = (n) => n >= 1000000 ? (n/1000000).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(1)+'K' : Math.round(n).toString();
@@ -28,7 +28,7 @@ function StatCard({ label, value, accent, color='#e8ff57' }) {
 }
 
 export default function CreatorPage({ params }) {
-  const { handle } = use(params);
+  const { handle } = params;
   const [period, setPeriod] = useState('lifetime');
 
   const creatorVideos = useMemo(() => TOP_VIDEOS.filter(v => v.creator === handle), [handle]);
