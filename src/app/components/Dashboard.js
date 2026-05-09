@@ -52,16 +52,42 @@ function KpiCard({ label, value, sub, sparkValues, accent, color = '#e8ff57' }) 
 }
 
 function MiniBarChart({ data, labelKey, valueKey, color = '#e8ff57', height = 160 }) {
+  const [hovered, setHovered] = useState(null);
   const max = Math.max(...data.map(d => d[valueKey]), 1);
   return (
-    <div style={{ display:'flex', alignItems:'flex-end', gap:4, height, paddingTop:8 }}>
+    <div style={{ position:'relative', display:'flex', alignItems:'flex-end', gap:4, height, paddingTop:8 }}>
       {data.map((d, i) => {
         const h = Math.max(4, (d[valueKey] / max) * (height - 20));
+        const isHov = hovered === i;
+        const val = d[valueKey];
+        const label = val >= 1000 ? '$' + (val/1000).toFixed(1) + 'K' : '$' + val.toFixed(0);
         return (
-          <div key={i} title={`${d[labelKey]}: ${d[valueKey].toLocaleString()}`}
-            style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
-            <div style={{ width:'100%', height:h, background:color, borderRadius:'3px 3px 0 0', opacity: 0.4 + 0.6*(d[valueKey]/max) }} />
-            <div style={{ fontSize:8, fontFamily:"'DM Mono',monospace", color:'#5a6075', textAlign:'center', whiteSpace:'nowrap', overflow:'hidden', maxWidth:36 }}>{d[labelKey]}</div>
+          <div key={i}
+            onMouseEnter={() => setHovered(i)}
+            onMouseLeave={() => setHovered(null)}
+            style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:4, position:'relative', cursor:'default' }}>
+            {/* Tooltip */}
+            {isHov && (
+              <div style={{
+                position:'absolute', bottom: h + 28, left:'50%', transform:'translateX(-50%)',
+                background:'#1a1d26', border:'1px solid #2a2e3a', borderRadius:6,
+                padding:'5px 9px', whiteSpace:'nowrap', zIndex:10,
+                fontFamily:"'DM Mono',monospace", fontSize:11, color:'#e8ff57',
+                pointerEvents:'none',
+                boxShadow:'0 4px 12px rgba(0,0,0,0.4)',
+              }}>
+                <div style={{ fontSize:9, color:'#5a6075', marginBottom:2 }}>{d[labelKey]}</div>
+                <div>{label}</div>
+              </div>
+            )}
+            <div style={{
+              width:'100%', height:h,
+              background: isHov ? '#e8ff57' : color,
+              borderRadius:'3px 3px 0 0',
+              opacity: isHov ? 1 : 0.4 + 0.6*(d[valueKey]/max),
+              transition:'background 0.15s, opacity 0.15s',
+            }} />
+            <div style={{ fontSize:8, fontFamily:"'DM Mono',monospace", color: isHov ? '#e8ff57' : '#5a6075', textAlign:'center', whiteSpace:'nowrap', overflow:'hidden', maxWidth:36, transition:'color 0.15s' }}>{d[labelKey]}</div>
           </div>
         );
       })}
